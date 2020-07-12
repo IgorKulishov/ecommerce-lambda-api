@@ -10,3 +10,7 @@
 - Post to create new order and persist to DB (DynamoDB/PostrgesQL)
 - Put to update order by order ID
 - Delete order by order ID
+
+## Commands
+- install: npm i
+- deploy to AWS: sls deploy -v
