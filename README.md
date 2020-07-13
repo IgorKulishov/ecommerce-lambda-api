@@ -22,8 +22,7 @@
 ### 2. Add roles in DB
 
 ### 3. Add JWT API Gateway Lambda function authentication
-
-## JWT: 
+#### Notes for current impl of JWT validation: 
  - Currently Jwt auth is not working due to wrong secret key from other project for jwt validation 
  - There is no API Gateway authorization lambda function, but Jwt token validation in "auth/auth.js" file
  - validation relies on secret key from other backend project
