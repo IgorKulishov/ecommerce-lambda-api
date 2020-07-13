@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "2020-07-12T23:55:09Z"
+  version: "2020-07-13T07:24:43Z"
   title: "dev-dealerspace-placed-orders"
 host: "85wrfe8ci4.execute-api.us-east-1.amazonaws.com"
 basePath: "/dev"
@@ -12,6 +12,24 @@ paths:
     get:
       responses: {}
     post:
+      responses: {}
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+  /orders/userid/{id}:
+    get:
       responses: {}
     options:
       consumes:
