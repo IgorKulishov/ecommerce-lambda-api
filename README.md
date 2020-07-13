@@ -14,3 +14,11 @@
 ## Commands
 - install: npm i
 - deploy to AWS: sls deploy -v
+
+## Note:
+### JWT authentication 
+ - Currently Jwt auth is not working due to wrong secret key from other project for jwt validation 
+ - There is no API Gateway authorization lambda function, but Jwt token validation in "auth/auth.js" file
+ - validation relies on secret key from other backend project
+ - Jwt validation was written for "list" orders API 
+ 
