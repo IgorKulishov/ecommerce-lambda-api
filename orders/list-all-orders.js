@@ -1,5 +1,5 @@
 'use strict';
-const auth = require('../auth/auth');
+// const auth = require('../auth/auth');
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
@@ -9,16 +9,13 @@ const params = {
 };
 
 module.exports.list = (event, context, callback) => {
-  const decoder = auth.validateJwt(event);
+  /** TODO: add separate lambda function for API Gateway JWT Auth and move code from "../auth/auth.js" **/
+  // const decoder = auth.validateJwt(event);
   // const decoder = Auth.validateJwt(event);
-  // fetch all order from the database
-  if(decoder === 'unauthorized') {
-    callback(null, {
-      statusCode: 403,
-      headers: { 'Content-Type': 'text/plain' },
-      body: 'Unauthorized user - please provide valid jwt token'
-    });
-  } else {
+  // if(decoder !== 'unauthorized') {
+  //   // Here fetch all order from the database
+  // }
+
     dynamoDb.scan(params, (error, result) => {
       // handle potential errors
       if (error) {
@@ -34,13 +31,10 @@ module.exports.list = (event, context, callback) => {
       // create a response
       const response = {
         statusCode: 200,
-        body: {
-          response: JSON.stringify(result.Items),
-          decoder: decoder
-        },
+        body: JSON.stringify(result.Items)
       };
       callback(null, response);
     });
-  }
+
 
 };

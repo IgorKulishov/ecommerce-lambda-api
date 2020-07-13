@@ -28,18 +28,26 @@ functions:
           cors: true
 
   list:
-    handler: orders/list.list
+    handler: orders/list-all-orders.list
     events:
       - http:
           path: orders
           method: get
           cors: true
 
-  get:
-    handler: orders/get.get
+  get-by-order:
+    handler: orders/get-by-orderid.get
     events:
       - http:
           path: orders/{id}
+          method: get
+          cors: true
+
+  get-by-user:
+    handler: orders/get-by-userid.get
+    events:
+      - http:
+          path: orders/userid/{id}
           method: get
           cors: true
 

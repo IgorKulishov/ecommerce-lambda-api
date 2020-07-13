@@ -8,7 +8,8 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 module.exports.create = (event, context, callback) => {
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body);
-  if (typeof data.order !== 'string') {
+  if (!data.userid || !data.userRole || !data.orderid || !data.orderDetails) {
+
     console.error('Validation Failed');
     callback(null, {
       statusCode: 400,
@@ -21,12 +22,14 @@ module.exports.create = (event, context, callback) => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
-      id: uuid.v1(),
-      order: data.order,
+      id: data.orderid,
+      userid: data.userid,
+      userRole: data.userRole,
+      orderDetails: data.orderDetails,
       checked: false,
       createdAt: timestamp,
-      updatedAt: timestamp,
-    },
+      updatedAt: timestamp
+    }
   };
 
   // write the order to the database
