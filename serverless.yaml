@@ -1,0 +1,102 @@
+service: dealerspace-placed-orders
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  environment:
+    DYNAMODB_TABLE_ORDER_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-placed-user-orders
+    DYNAMODB_TABLE_USERS_PLACED_ORDERS: ${self:service}-${opt:stage, self:provider.stage}-placed-order-details
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_ORDER_DETAILS}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS_PLACED_ORDERS}"
+
+functions:
+  create:
+    handler: orders/create-user-order.create
+    events:
+      - http:
+          path: orders
+          method: post
+          cors: true
+
+  list:
+    handler: orders/list-all-users-orders.list
+    events:
+      - http:
+          path: orders
+          method: get
+          cors: true
+
+  getByUserId:
+    handler: orders/get-by-userid.get
+    events:
+      - http:
+          path: orders/userid/{id}
+          method: get
+          cors: true
+
+  getByOrderId:
+    handler: orders/get-by-orderid.update
+    events:
+      - http:
+          path: orders/{id}
+          method: get
+          cors: true
+
+  update:
+    handler: orders/update-order.update
+    events:
+      - http:
+          path: orders/{id}
+          method: put
+          cors: true
+
+  delete:
+    handler: orders/delete-order.delete
+    events:
+      - http:
+          path: orders/{id}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    OrderDetails:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_ORDER_DETAILS}
+    UserPlacedOrders:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_USERS_PLACED_ORDERS}
