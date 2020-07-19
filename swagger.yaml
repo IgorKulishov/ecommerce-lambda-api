@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "2020-07-13T07:24:43Z"
+  version: "2020-07-19T21:07:19Z"
   title: "dev-dealerspace-placed-orders"
 host: "85wrfe8ci4.execute-api.us-east-1.amazonaws.com"
 basePath: "/dev"

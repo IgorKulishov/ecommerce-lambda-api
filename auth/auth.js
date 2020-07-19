@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const secret_key = process.env.ACCESS_TOKEN_SECRET || 'secret.key';
 
-/** TODO: Move the logic to separate API Gateway auth lambda function **/
+/** This function is not used yet **/
 module.exports.validateJwt = (event) => {
     // Converting secret key to sequence of bytes (same as it is implemented in Java API)
     const toUTF8Array = (str) => {
