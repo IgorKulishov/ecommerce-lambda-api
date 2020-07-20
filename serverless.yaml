@@ -47,7 +47,7 @@ functions:
           cors: true
 
   getByOrderId:
-    handler: orders/get-by-orderid.update
+    handler: orders/get-by-orderid.get
     events:
       - http:
           path: orders/{id}

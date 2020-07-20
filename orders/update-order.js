@@ -24,15 +24,12 @@ module.exports.update = (event, context, callback) => {
     Key: {
       id: event.pathParameters.id,
     },
-    ExpressionAttributeNames: {
-      '#order': 'order',
-    },
     ExpressionAttributeValues: {
-      ':order': data.order,
+      ':orderDetails': data.orderDetails,
       ':checked': data.checked,
       ':updatedAt': timestamp,
     },
-    UpdateExpression: 'SET #order = :order, checked = :checked, updatedAt = :updatedAt',
+    UpdateExpression: 'SET orderDetails = :orderDetails, checked = :checked, updatedAt = :updatedAt',
     ReturnValues: 'ALL_NEW',
   };
 
