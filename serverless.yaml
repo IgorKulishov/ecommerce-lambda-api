@@ -22,6 +22,10 @@ provider:
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS_PLACED_ORDERS}"
 
 functions:
+  auth:
+    handler: auth/auth.auth
+    cors: true
+
   create:
     handler: orders/create-user-order.create
     events:
@@ -29,6 +33,7 @@ functions:
           path: orders
           method: post
           cors: true
+          authorizer: auth
 
   list:
     handler: orders/list-all-users-orders.list
@@ -37,6 +42,7 @@ functions:
           path: orders
           method: get
           cors: true
+          authorizer: auth
 
   getByUserId:
     handler: orders/get-by-userid.get
@@ -45,6 +51,7 @@ functions:
           path: orders/userid/{id}
           method: get
           cors: true
+          authorizer: auth
 
   getByOrderId:
     handler: orders/get-by-orderid.get
@@ -53,6 +60,7 @@ functions:
           path: orders/{id}
           method: get
           cors: true
+          authorizer: auth
 
   update:
     handler: orders/update-order.update
@@ -61,6 +69,7 @@ functions:
           path: orders/{id}
           method: put
           cors: true
+          authorizer: auth
 
   delete:
     handler: orders/delete-order.delete
@@ -69,6 +78,7 @@ functions:
           path: orders/{id}
           method: delete
           cors: true
+          authorizer: auth
 
 resources:
   Resources:
