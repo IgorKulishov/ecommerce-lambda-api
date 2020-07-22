@@ -1,31 +1,43 @@
+# Orders history API
 
-# Placed orders history API
-
-## Stack
-Lambda function + DynamoDB
-
-## Description
-The API for placed orders history for seller and buyers
+## AWS Lambda function & DynamoDB
 
 ## API CRUDs:
-- List all active orders (for seller)
-- Get all pending orders by user ID (for buyer and seller)
-- Get order by order ID (for buyer and seller)
-- Post to create new order and persist to DB (for buyer and seller)
-- Put to update order by order ID (for buyer and seller)
-- Delete order by order ID (for buyer and seller)
+| API    |  Method | Description | Auth |
+|-----------|---|---|---|
+| /orders | post | create new order |
+| /orders | get | all orders |
+| /orders/userid/{id} | get | all orders by userid |
+| /orders/{id} | get | order by orderid |
+| /orders/{id} | put | update order by orderid |
+| /orders/{id} | delete | delete order by orderid |
 
-## Fields of DB
- - userid
- - userRole
- - orderDetails
- - checked
- - createdAt
- - updatedAt
- - isPending
- - isBlocked
- - isDelivered
- 
+### Notes:
+Todo list:
+* add and validate user 'seller' role for get /orders request
+* add public key for proper jwt validation
+
+## DynamoDB Tables
+
+1 placed-user-orders
+
+| Fields    |   |
+|-----------|---|
+| id (userid)   | string   |
+| orderid   |  string |
+| userRole   |  string |
+| createdAt   |  integer |
+| updatedAt   |  integer |
+
+2  placed-order-details
+
+| Fields    |   |
+|-----------|---|
+| id (orderid)  |  string |
+| orderDetails   |  string |
+| checked   | boolean  |
+| createdAt   | integer  |
+| updatedAt   |  integer |
 
 ## Commands
 - install: npm i
