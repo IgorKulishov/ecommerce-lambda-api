@@ -31,6 +31,8 @@ module.exports.create = (event, context, callback) => {
       updatedAt: timestamp
     }
   };
+  console.log('paramsUserOrders')
+  console.log(paramsUserOrders)
   // B. Params for to safe data into 'order details' Table
   const paramsOrderDetails = {
     TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
@@ -60,6 +62,7 @@ module.exports.create = (event, context, callback) => {
     //   body: JSON.stringify(params.Item),
     // };
     // callback(null, response);
+    console.log(paramsOrderDetails)
     /** Safe data to 'order details' Table **/
     dynamoDb.put(paramsOrderDetails, (error) => {
       // handle potential errors

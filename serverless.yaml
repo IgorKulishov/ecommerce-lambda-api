@@ -1,6 +1,11 @@
+org: igorkulishov
+app: chat-app
 service: dealerspace-placed-orders
 
 frameworkVersion: ">=1.1.0 <2.0.0"
+
+plugins:
+  - serverless-mocha-plugin
 
 provider:
   name: aws
