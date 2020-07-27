@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const createUserOrder = require('../../orders/create-user-order');
 const AWS = require('aws-sdk');
-var AWSMock = require('aws-sdk-mock');
+const AWSMock = require('aws-sdk-mock');
 
 describe('test create-user-order', () => {
     const eventMock = { body: JSON.stringify({ userid: 'userid', userRole: 'userRole', orderid: 'orderid', orderDetails: 'orderDetails' }) };
@@ -16,8 +16,6 @@ describe('test create-user-order', () => {
 
         AWS.config.update({ region: "us-east-1" });
         dynamoDb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-
-        // sinon.stub(dynamoDb, "put").callsFake(() => true)
     });
 
     afterEach(function() {
