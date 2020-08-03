@@ -5,8 +5,8 @@ const getByOrderId = require('../../orders/get-by-orderid');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 
-describe('test get order details order by id', () => {
-    const eventMock = { pathParameters: JSON.stringify({ id: '1234567' }) };
+describe('test get order details by order id', () => {
+    const eventMock = { pathParameters: { id: '1234567' } };
     let dynamoDb;
     let getTableSpy = sinon.spy();
 
@@ -22,7 +22,7 @@ describe('test get order details order by id', () => {
         AWSMock.restore('DynamoDB');
     });
 
-    it('if dynamoDB delete was called', () => {
+    it('if dynamoDB get by orderid was called', () => {
         getByOrderId.get(eventMock, {}, (arg1, arg2) => { return });
         expect(getTableSpy.calledOnce).to.be.true;
     });

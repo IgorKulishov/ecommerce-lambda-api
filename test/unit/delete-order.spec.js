@@ -1,12 +1,12 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const sinon = require('sinon');
-const userOrder = require('../../orders/delete-order');
+const deleteUserOrder = require('../../orders/delete-order');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 
 describe('test delete-user-order', () => {
-    const eventMock = { pathParameters: JSON.stringify({ id: '1234567' }) };
+    const eventMock = { pathParameters: { id: '1234567' } };
     let dynamoDb;
     let deleteTableSpy = sinon.spy();
 
@@ -22,8 +22,7 @@ describe('test delete-user-order', () => {
         AWSMock.restore('DynamoDB');
     });
 
-    it('if dynamoDB delete was called', () => {
-        userOrder.delete(eventMock, {}, (arg1, arg2) => { return });
+    it('if dynamoDB delete was called', () => { deleteUserOrder.delete(eventMock, {}, (arg1, arg2) => { return });
         expect(deleteTableSpy.calledOnce).to.be.true;
     });
 });

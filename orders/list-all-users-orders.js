@@ -3,12 +3,11 @@
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const params = {
-  TableName: process.env.DYNAMODB_TABLE_USERS_PLACED_ORDERS
-};
-
 module.exports.list = (event, context, callback) => {
+  const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1", apiVersion: "2012-08-10" });
+  const params = {
+    TableName: process.env.DYNAMODB_TABLE_USERS_PLACED_ORDERS
+  };
   /** TODO: add separate lambda function for API Gateway JWT Auth and move code from "../auth/auth.js" **/
   // const decoder = auth.validateJwt(event);
   // const decoder = Auth.validateJwt(event);
@@ -27,7 +26,6 @@ module.exports.list = (event, context, callback) => {
       });
       return;
     }
-
     // create a response
     const response = {
       statusCode: 200,
@@ -35,5 +33,4 @@ module.exports.list = (event, context, callback) => {
     };
     callback(null, response);
   });
-
 };

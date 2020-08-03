@@ -2,17 +2,10 @@
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-
 module.exports.get = (event, context, callback) => {
-  // Params for Scan
-  // Useful link https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html
-  // const params = {
-  //   TableName: process.env.DYNAMODB_TABLE_USERS_PLACED_ORDERS,
-  //   FilterExpression: "userid = :userid",
-  //   ExpressionAttributeValues: { ":userid": event.pathParameters.id },
-  //   ProjectionExpression: 'userid, orderDetails'
-  // };
+
+  const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
+
   const params = {
     TableName: process.env.DYNAMODB_TABLE_USERS_PLACED_ORDERS,
     Key: {

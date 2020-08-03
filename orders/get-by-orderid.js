@@ -4,7 +4,7 @@ const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-depe
 
 module.exports.get = (event, context, callback) => {
 
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
   const params = {
     TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
@@ -25,7 +25,6 @@ module.exports.get = (event, context, callback) => {
       });
       return;
     }
-
     // create a response
     const response = {
       statusCode: 200,

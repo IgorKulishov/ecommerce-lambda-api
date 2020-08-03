@@ -2,14 +2,13 @@
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-
 module.exports.update = (event, context, callback) => {
+  const dynamoDb = new AWS.DynamoDB.DocumentClient();
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body);
 
   // validation
-  if (typeof data.order !== 'string' || typeof data.checked !== 'boolean') {
+  if (typeof data.orderDetails !== 'string' || typeof data.checked !== 'boolean') {
     console.error('Validation Failed');
     callback(null, {
       statusCode: 400,
