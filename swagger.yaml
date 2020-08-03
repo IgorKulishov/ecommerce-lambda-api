@@ -1,0 +1,88 @@
+---
+swagger: "2.0"
+info:
+  version: "2020-07-21T02:29:34Z"
+  title: "dev-dealerspace-placed-orders"
+host: "85wrfe8ci4.execute-api.us-east-1.amazonaws.com"
+basePath: "/dev"
+schemes:
+  - "https"
+paths:
+  /orders:
+    get:
+      responses: {}
+      security:
+        - auth: []
+    post:
+      responses: {}
+      security:
+        - auth: []
+    options:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+  /orders/userid/{id}:
+    get:
+      responses: {}
+      security:
+        - auth: []
+    options:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+  /orders/{id}:
+    get:
+      responses: {}
+      security:
+        - auth: []
+    put:
+      responses: {}
+      security:
+        - auth: []
+    delete:
+      responses: {}
+      security:
+        - auth: []
+    options:
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+securityDefinitions:
+  auth:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+    x-amazon-apigateway-authtype: "custom"
