@@ -90,7 +90,7 @@ module.exports.auth = (event, context, callback) => {
                 console.log(decoded);
             });
         }
-        /** Temp solution start until the public key is set **/
+        /** <<HERE>> Temp solution until the public key and validation is set properly **/
         if(!!tokenValue) {
             const decodedToken = jwt.decode(tokenValue, {complete: true});
             const decodedPayload = decodedToken.payload;
@@ -101,6 +101,8 @@ module.exports.auth = (event, context, callback) => {
                 console.log('Token : ', tokenValue);
                 const harcodedUserId = 'default';
                 return callback(null, generatePolicy(harcodedUserId, 'Allow', event.methodArn));
+            } else {
+                return callback('Token expired');
             }
         } else {
             console.log('catch error. Invalid token', err);
