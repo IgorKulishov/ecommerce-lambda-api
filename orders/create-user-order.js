@@ -3,10 +3,11 @@
 const uuid = require('uuid');
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
+// const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.create = (event, context, callback) => {
-
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  // For testing purposes need to instantiate Tadle inside function with region defined
+  const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body);
@@ -43,7 +44,7 @@ module.exports.create = (event, context, callback) => {
       updatedAt: timestamp
     }
   };
-  /** Safe data to 'user placed orders' Table **/
+  /** 1. Safe data to 'user placed orders' Table **/
   dynamoDb.put(paramsUserOrders, (error) => {
     // handle potential errors to safe to 'user placed orders' Table
     if (error) {
@@ -56,12 +57,7 @@ module.exports.create = (event, context, callback) => {
       });
       return;
     }
-    // const response = {
-    //   statusCode: 200,
-    //   body: JSON.stringify(params.Item),
-    // };
-    // callback(null, response);
-    /** Safe data to 'order details' Table **/
+    /** 2. Safe data to 'order details' Table **/
     dynamoDb.put(paramsOrderDetails, (error) => {
       // handle potential errors
       if (error) {

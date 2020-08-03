@@ -11,8 +11,9 @@ provider:
   name: aws
   runtime: nodejs10.x
   environment:
-    DYNAMODB_TABLE_ORDER_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-placed-user-orders
-    DYNAMODB_TABLE_USERS_PLACED_ORDERS: ${self:service}-${opt:stage, self:provider.stage}-placed-order-details
+    DYNAMODB_TABLE_USERS_PLACED_ORDERS: ${self:service}-${opt:stage, self:provider.stage}-users-placed-orders
+    DYNAMODB_TABLE_ORDER_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-orders-details
+    ACCESS_TOKEN_SECRET: 'secret.key'
   iamRoleStatements:
     - Effect: Allow
       Action:

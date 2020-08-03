@@ -1,11 +1,11 @@
 'use strict';
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+// const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.get = (event, context, callback) => {
-
-  const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
-
+    // For testing purposes need to instantiate Tadle inside function with region defined
+    const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
   const params = {
     TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
     Key: {
