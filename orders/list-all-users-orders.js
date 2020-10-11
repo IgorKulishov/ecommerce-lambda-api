@@ -25,9 +25,14 @@ module.exports.list = (event, context, callback) => {
     }
     // create a response
     const response = {
-      statusCode: 200,
-      body: JSON.stringify(result.Items)
-    };
+        statusCode: 200,
+        body: JSON.stringify(result.Items),
+        headers: {
+            "Access-Control-Allow-Headers" : "*",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+          }
+      };
     callback(null, response);
   });
 };
