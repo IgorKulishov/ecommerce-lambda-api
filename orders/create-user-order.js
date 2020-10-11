@@ -74,6 +74,11 @@ module.exports.create = (event, context, callback) => {
       const response = {
         statusCode: 200,
         body: JSON.stringify({...paramsOrderDetails.Item, ...paramsUserOrders.Item}),
+        headers: {
+          "Access-Control-Allow-Headers" : "*",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+        }
       };
       callback(null, response);
     });

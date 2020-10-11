@@ -38,8 +38,8 @@ functions:
       - http:
           path: orders
           method: post
-          cors: true
           authorizer: auth
+          cors: true
 
   list:
     handler: orders/list-all-users-orders.list
@@ -47,8 +47,8 @@ functions:
       - http:
           path: orders
           method: get
-          cors: true
           authorizer: auth
+          cors: true
 
   getByUserId:
     handler: orders/get-by-userid.get
@@ -56,8 +56,8 @@ functions:
       - http:
           path: orders/userid/{id}
           method: get
-          cors: true
           authorizer: auth
+          cors: true
 
   getByOrderId:
     handler: orders/get-by-orderid.get
@@ -65,8 +65,8 @@ functions:
       - http:
           path: orders/{id}
           method: get
-          cors: true
           authorizer: auth
+          cors: true
 
   update:
     handler: orders/update-order.update
@@ -74,8 +74,8 @@ functions:
       - http:
           path: orders/{id}
           method: put
-          cors: true
           authorizer: auth
+          cors: true
 
   delete:
     handler: orders/delete-order.delete
@@ -83,8 +83,8 @@ functions:
       - http:
           path: orders/{id}
           method: delete
-          cors: true
           authorizer: auth
+          cors: true
 
 resources:
   Resources:

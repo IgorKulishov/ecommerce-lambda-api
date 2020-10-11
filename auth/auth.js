@@ -68,45 +68,16 @@ module.exports.auth = (event, context, callback) => {
             // 1) token as string; HS256 algorithm
             jwt.verify(tokenValue, ACCESS_TOKEN_SECRET, { algorithms: ['HS256'] }, function (err, decoded) {
                 console.log('without base64 decoding; with algorithm');
-                console.log(err);
-                console.log(decoded);
+                if( !err && decoded && decoded.sub && decoded.iat) {
+                    console.log('Token : ', tokenValue);
+                    const harcodedUserId = 'default';
+                    return callback(null, generatePolicy(harcodedUserId, 'Allow', event.methodArn));
+                } else {
+                    console.log('catch error. Invalid token', err);
+                    return callback('Unauthorized or expired');
+                }
             });
-            // 2) token as string; w/o algorithm
-            jwt.verify(tokenValue, ACCESS_TOKEN_SECRET, function (err, decoded) {
-                console.log('without base64 decoding; without algorithm');
-                console.log(err);
-                console.log(decoded);
-            });
-            // 3) token as buffer of bytes; HS256 algorithm
-            jwt.verify(tokenValue, jwtAccessTokenBytes, { algorithms: ['HS256'] }, function (err, decoded) {
-                console.log('with base64, with algorithm');
-                console.log(err);
-                console.log(decoded);
-            });
-            // 4) token as buffer of bytes; w/o algorithm
-            jwt.verify(tokenValue, jwtAccessTokenBytes, function (err, decoded) {
-                console.log('with base64, without algorithm');
-                console.log(err);
-                console.log(decoded);
-            });
-        }
-        /** <<HERE>> Temp solution until the public key and validation is set properly **/
-        if(!!tokenValue) {
-            const decodedToken = jwt.decode(tokenValue, {complete: true});
-            const decodedPayload = decodedToken.payload;
-            const expDate = decodedPayload.exp;
-            const ifValidToken = (expDate * 1000 - Date.now()) > 0;
-            if(ifValidToken) {
-                console.log('Token is not expired, content : ', decodedToken);
-                console.log('Token : ', tokenValue);
-                const harcodedUserId = 'default';
-                return callback(null, generatePolicy(harcodedUserId, 'Allow', event.methodArn));
-            } else {
-                return callback('Token expired');
-            }
-        } else {
-            console.log('catch error. Invalid token', err);
-            return callback('Unauthorized');
+
         }
     }
 };
