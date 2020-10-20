@@ -4,38 +4,29 @@ const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-depe
 // const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.get = (event, context, callback) => {
-  // For testing purposes need to instantiate Tadle inside function with region defined
+  // TODO: Move instance outside function , currently for testing purposes need to instantiate Tadle inside function with region defined
   const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
-
   const params = {
-    TableName: process.env.DYNAMODB_TABLE_USERS_PLACED_ORDERS,
-    Key: {
-      id: event.pathParameters.id,
-    },
+    TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
+    IndexName: "usersGSI",
+    KeyConditionExpression: "userid = :userid",
+    ExpressionAttributeValues: {
+      ":userid": event.path.id
+    }
   };
 
-  // fetch orders from the database
-  dynamoDb.get(params, (error, result) => {
+  // query orders from the database
+  dynamoDb.query(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error(error);
       callback(null, {
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
-        body: 'Couldn\'t fetch the orders for the userid',
+        body: error
       });
       return;
     }
-    // create a response
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify(result.Item),
-      headers: {
-        "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
-      }
-    };
-    callback(null, response);
+    callback(null, result.Items);
   });
 };
