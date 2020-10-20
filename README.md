@@ -61,3 +61,6 @@ Todo list:
 - when you update Authorizer please update manually environment properties, including secret key 
 ## TODO:
  - Add 'seller' and 'buyer' roles for authorization
+ - update with secondary index queries the APIs:
+    * delete order 
+    * update order 
