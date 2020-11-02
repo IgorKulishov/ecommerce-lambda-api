@@ -1,6 +1,6 @@
 org: igorkulishov
 app: chat-app
-service: dealerspace-placed-orders
+service: placed-orders-api
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -14,6 +14,7 @@ provider:
     DYNAMODB_TABLE_USERS_PLACED_ORDERS: ${self:service}-${opt:stage, self:provider.stage}-users-placed-orders
     DYNAMODB_TABLE_ORDER_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-orders-details
     ACCESS_TOKEN_SECRET: 'secret.key'
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -25,7 +26,9 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_ORDER_DETAILS}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_ORDER_DETAILS}/index/*"
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS_PLACED_ORDERS}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS_PLACED_ORDERS}/index/*"
 
 functions:
   auth:
@@ -40,6 +43,7 @@ functions:
           method: post
           authorizer: auth
           cors: true
+          integration: LAMBDA
 
   list:
     handler: orders/list-all-users-orders.list
@@ -49,6 +53,7 @@ functions:
           method: get
           authorizer: auth
           cors: true
+          integration: LAMBDA
 
   getByUserId:
     handler: orders/get-by-userid.get
@@ -58,6 +63,7 @@ functions:
           method: get
           authorizer: auth
           cors: true
+          integration: LAMBDA
 
   getByOrderId:
     handler: orders/get-by-orderid.get
@@ -67,6 +73,7 @@ functions:
           method: get
           authorizer: auth
           cors: true
+          integration: LAMBDA
 
   update:
     handler: orders/update-order.update
@@ -76,6 +83,7 @@ functions:
           method: put
           authorizer: auth
           cors: true
+          integration: LAMBDA
 
   delete:
     handler: orders/delete-order.delete
@@ -85,19 +93,56 @@ functions:
           method: delete
           authorizer: auth
           cors: true
+          integration: LAMBDA
+
+# Global secondary index (GSI) has to be defined in 'AttributeDefinitions'
+# We defined two GSIs: usersGSI, ordersGSI
+# 'KeySchema' defines primary/partition key
+# 'AttributeDefinitions' defines primary/partition key and secondary index(s) (GSI)
+# 'GlobalSecondaryIndexes' defines GSI
+# 'Projections' defines returns fields for secondary index(s)
 
 resources:
   Resources:
-    OrderDetails:
+    PlacedOrdersDetails:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
         KeySchema:
-          - AttributeName: id
+        - AttributeName: id
+          KeyType: HASH
+        AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: userid
+          AttributeType: S
+        - AttributeName: orderid
+          AttributeType: S
+        GlobalSecondaryIndexes:
+        - IndexName: usersGSI
+          KeySchema:
+          - AttributeName: userid
             KeyType: HASH
+          Projection:
+            NonKeyAttributes:
+            - orderDetails
+            - checked
+            ProjectionType: INCLUDE
+          ProvisionedThroughput:
+            ReadCapacityUnits: '1'
+            WriteCapacityUnits: '1'
+        - IndexName: ordersGSI
+          KeySchema:
+            - AttributeName: orderid
+              KeyType: HASH
+          Projection:
+            NonKeyAttributes:
+              - orderDetails
+              - checked
+            ProjectionType: INCLUDE
+          ProvisionedThroughput:
+            ReadCapacityUnits: '1'
+            WriteCapacityUnits: '1'
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
@@ -116,3 +161,13 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE_USERS_PLACED_ORDERS}
+# Required for CORS
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'

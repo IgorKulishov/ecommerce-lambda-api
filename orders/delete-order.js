@@ -10,7 +10,7 @@ module.exports.delete = (event, context, callback) => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
     Key: {
-      id: event.pathParameters.id,
+      id: event.path.id,
     },
   };
 
@@ -33,6 +33,7 @@ module.exports.delete = (event, context, callback) => {
       body: JSON.stringify({}),
       headers: {
         "Access-Control-Allow-Headers" : "*",
+        "Access-Control-Allow-Credentials": true,
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
       },

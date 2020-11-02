@@ -29,6 +29,7 @@ module.exports.list = (event, context, callback) => {
         body: JSON.stringify(result.Items),
         headers: {
             "Access-Control-Allow-Headers" : "*",
+            "Access-Control-Allow-Credentials": true,
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
           }

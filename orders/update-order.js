@@ -54,6 +54,7 @@ module.exports.update = (event, context, callback) => {
       body: JSON.stringify(result.Attributes),
       headers: {
         "Access-Control-Allow-Headers" : "*",
+        "Access-Control-Allow-Credentials": true,
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
       }
