@@ -1,12 +1,10 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-// const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+// For testing purposes need to instantiate Table inside function with region defined
+const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.delete = (event, context, callback) => {
-  // For testing purposes need to instantiate Tadle inside function with region defined
-  const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
-
   const params = {
     TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
     Key: {
@@ -26,18 +24,6 @@ module.exports.delete = (event, context, callback) => {
       });
       return;
     }
-
-    // create a response
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify({}),
-      headers: {
-        "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Credentials": true,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
-      },
-    };
-    callback(null, response);
+    callback(null, result.Items);
   });
 };
