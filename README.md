@@ -55,12 +55,19 @@ Todo list:
 ### D. Docs : 
 - Secondary indexes explanation and example: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
 - Read notes when add/update secondary indexes https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html#cfn-dynamodb-table-globalsecondaryindexes
-
-## Notes:
-- if you rename Lambda function name by changing 'service' field in serverless.yml file, please delete all Lambda functions in console including authorizing function or remove manually from API Gateway 
-- when you update Authorizer please update manually environment properties, including secret key 
+ 
 ## TODO:
  - Add 'seller' and 'buyer' roles for authorization
  - update with secondary index queries the APIs:
     * delete order 
     * update order 
+
+## Notes:
+- if you rename Lambda function name by changing 'service' field in serverless.yml file, please delete all Lambda functions in console including authorizing function or remove manually from API Gateway 
+- when you update Authorizer please update manually environment properties in AWS Lambda UI console, including secret key
+- When updating GSI (global secondary index) please keep in mind 
+-- in existing GSI index you can update only 'ProvisionedThroughput' but can not update properties in 'NonKeyAttributes' in 'Projection'
+-- in order to update properties in 'NonKeyAttributes' in 'Projection' you need to create new GSI by either way
+    A) add new GSI in dynamodb in cloud formation in serverless.yaml file and use command `sls deploy -a`
+    B) use aws cli command `aws dynamodb update-table --table-name placed-orders-api-dev-orders-details --global-secondary-index-updates file://dynamodb_updates/gsi_update_1.json --attribute-definitions AttributeName=userid,AttributeType=S`
+     

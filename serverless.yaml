@@ -100,7 +100,7 @@ functions:
 # 'KeySchema' defines primary/partition key
 # 'AttributeDefinitions' defines primary/partition key and secondary index(s) (GSI)
 # 'GlobalSecondaryIndexes' defines GSI
-# 'Projections' defines returns fields for secondary index(s)
+# 'Projection' defines returns fields for secondary index(s)
 
 resources:
   Resources:
@@ -119,6 +119,19 @@ resources:
         - AttributeName: orderid
           AttributeType: S
         GlobalSecondaryIndexes:
+        - IndexName: usersGSI_v2
+          KeySchema:
+            - AttributeName: userid
+              KeyType: HASH
+          Projection:
+            NonKeyAttributes:
+              - orderDetails
+              - checked
+              - updatedAt
+            ProjectionType: INCLUDE
+          ProvisionedThroughput:
+            ReadCapacityUnits: '1'
+            WriteCapacityUnits: '1'
         - IndexName: usersGSI
           KeySchema:
           - AttributeName: userid

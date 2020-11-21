@@ -1,11 +1,11 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-// const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+// For testing purposes need to instantiate Table inside function with region defined
+const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.get = (event, context, callback) => {
-  // TODO: Move instance outside function , currently for testing purposes need to instantiate Tadle inside function with region defined
-    const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
+
     const params = {
       IndexName: "ordersGSI",
       KeyConditionExpression: "orderid = :orderid",
