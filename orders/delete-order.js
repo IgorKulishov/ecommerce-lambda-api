@@ -5,10 +5,11 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.delete = (event, context, callback) => {
+  const order_id = event.path.id;
   const params = {
     TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
     Key: {
-      id: event.path.id,
+      id: order_id,
     },
   };
 
@@ -24,6 +25,9 @@ module.exports.delete = (event, context, callback) => {
       });
       return;
     }
-    callback(null, result.Items);
+    callback(null, {
+      id: order_id,
+      message: "order deleted"
+    });
   });
 };
