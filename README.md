@@ -70,7 +70,12 @@ Todo list:
     A)  in existing GSI index you can update only 'ProvisionedThroughput' but can not update properties in 'NonKeyAttributes' in 'Projection'
 
     B)  in order to update properties in 'NonKeyAttributes' in 'Projection' you need to create new GSI by either way
-        a) add new GSI in dynamodb in cloud formation in serverless.yaml file and use command `sls deploy -a`
+        
+        a) add new GSI in dynamodb in cloud formation in serverless.yaml file and use command 
+        ```
+            sls deploy -a
+        ```
+        
         b) use aws cli command `aws dynamodb update-table --table-name placed-orders-api-dev-orders-details --global-secondary-index-updates file://dynamodb_updates/gsi_update_1.json --attribute-definitions AttributeName=userid,AttributeType=S`
      
 
