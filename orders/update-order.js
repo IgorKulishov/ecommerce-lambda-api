@@ -1,23 +1,26 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-// const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.update = (event, context, callback) => {
   // For testing purposes need to instantiate Tadle inside function with region defined
-  const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
   const timestamp = new Date().getTime();
-  const data = JSON.parse(event.body);
-
+  let data;
+  if(typeof event.body === 'string') {
+    data = JSON.parse(event.body);
+  } else {
+    data = event.body;
+  }
   // validation
   if (typeof data.orderDetails !== 'string' || typeof data.checked !== 'boolean') {
     console.error('Validation Failed');
-    callback(null, {
+    callback({
       statusCode: 400,
       headers: { 'Content-Type': 'text/plain' },
       body: 'Couldn\'t update the orders item.',
-    });
+    }, null);
     return;
   }
 
@@ -40,25 +43,14 @@ module.exports.update = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error);
-      callback(null, {
+      callback({
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
         body: 'Couldn\'t fetch the order item.',
-      });
+      }, null);
       return;
     }
 
-    // create a response
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify(result.Attributes),
-      headers: {
-        "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Credentials": true,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
-      }
-    };
-    callback(null, response);
+    callback(null, JSON.stringify(result.Attributes));
   });
 };
