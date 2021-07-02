@@ -8,7 +8,7 @@ module.exports.get = (event, context, callback) => {
 
   const params = {
     TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
-    IndexName: "usersGSI_v2",
+    IndexName: "usersGSI",
     KeyConditionExpression: "userid = :userid",
     ExpressionAttributeValues: {
       ":userid": event.path.id

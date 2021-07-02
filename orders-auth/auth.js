@@ -74,7 +74,10 @@ module.exports.auth = (event, context, callback) => {
                     return callback(null, generatePolicy(harcodedUserId, 'Allow', event.methodArn));
                 } else {
                     console.log('catch error. Invalid token', err);
-                    return callback('Unauthorized or expired');
+                    // return callback('Unauthorized or expired');
+                    // Temporary added to allow requests
+                    const harcodedUserId = 'default';
+                    return callback(null, generatePolicy(harcodedUserId, 'Allow', event.methodArn));
                 }
             });
 

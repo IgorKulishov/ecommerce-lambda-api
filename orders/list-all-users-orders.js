@@ -6,21 +6,36 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.list = (event, context, callback) => {
   // For testing purposes need to instantiate Tadle inside function with region defined
+  const ordersDate = event && event.query ? event.query.ordersDate : undefined;
+  if(!!ordersDate) {
+    const params = {
+      IndexName: "ordersDatesGSI",
+      KeyConditionExpression: "orderPlacedDate = :ordersDate",
+      TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
+      ExpressionAttributeValues: {
+        ":ordersDate": ordersDate
+      }
+    };
 
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE_USERS_PLACED_ORDERS
-  };
-  dynamoDb.scan(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback({
-        statusCode: error.statusCode || 501,
-        headers: { 'Content-Type': 'text/plain' },
-        body: 'Couldn\'t fetch the orders.'
-      }, null);
-      return;
-    }
-    callback(null, JSON.stringify(result.Items));
-  });
+    // query orders from the database
+    dynamoDb.query(params, (error, result) => {
+      // handle potential errors
+      if (error) {
+        console.error(error);
+        callback(null, {
+          statusCode: error.statusCode || 501,
+          headers: { 'Content-Type': 'text/plain' },
+          body: error
+        });
+        return;
+      }
+      callback(null, result.Items);
+    });
+  } else {
+    callback(null, {
+      statusCode: 400,
+      headers: { 'Content-Type': 'text/plain' },
+      body: 'ordersDate query params is missing'
+    });
+  }
 };

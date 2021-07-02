@@ -8,6 +8,7 @@ module.exports.create = (event, context, callback) => {
   // For testing purposes need to instantiate Table inside function with region defined
   let data;
   const timestamp = new Date().getTime();
+  const time = new Date();
   if(typeof event.body === 'string') {
     data = JSON.parse(event.body);
   } else {
@@ -33,7 +34,8 @@ module.exports.create = (event, context, callback) => {
       userRole: data.userRole,
       checked: false,
       createdAt: timestamp,
-      updatedAt: timestamp
+      updatedAt: timestamp,
+      orderPlacedDate: time.toISOString().split('T')[0]
     }
   };
   /** Safe placed orders **/
