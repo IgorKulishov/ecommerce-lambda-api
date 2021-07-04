@@ -38,7 +38,7 @@ functions:
     events:
       - http:
           path: orders
-          method: post
+          method: put
           authorizer: auth
           cors: true
           integration: LAMBDA
@@ -78,7 +78,7 @@ functions:
     events:
       - http:
           path: orders/{id}
-          method: put
+          method: post
           authorizer: auth
           cors: true
           integration: LAMBDA

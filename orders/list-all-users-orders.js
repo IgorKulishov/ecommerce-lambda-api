@@ -7,14 +7,28 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 module.exports.list = (event, context, callback) => {
   // For testing purposes need to instantiate Tadle inside function with region defined
   const ordersDate = event && event.query ? event.query.ordersDate : undefined;
-  if(!!ordersDate) {
+  const isOrderChecked = event && event.query ? event.query.isOrderChecked : undefined;
+
+  let expressionAttributeValues;
+
+  if(ordersDate) {
+
+    expressionAttributeValues = {
+      ":ordersDate": ordersDate
+    }
+    if(isOrderChecked === 'true' || isOrderChecked === 'false') {
+      expressionAttributeValues = {
+        ...expressionAttributeValues,
+        ":isOrderChecked": isOrderChecked === 'true'
+      }
+    }
+
     const params = {
       IndexName: "ordersDatesGSI",
       KeyConditionExpression: "orderPlacedDate = :ordersDate",
+      FilterExpression: "checked = :isOrderChecked",
       TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
-      ExpressionAttributeValues: {
-        ":ordersDate": ordersDate
-      }
+      ExpressionAttributeValues: expressionAttributeValues
     };
 
     // query orders from the database
@@ -31,6 +45,7 @@ module.exports.list = (event, context, callback) => {
       }
       callback(null, result.Items);
     });
+
   } else {
     callback(null, {
       statusCode: 400,
