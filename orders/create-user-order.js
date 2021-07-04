@@ -19,7 +19,7 @@ module.exports.create = (event, context, callback) => {
     console.error('Validation Failed');
     callback({
       statusCode: 400,
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'application/json' },
       body: 'Couldn\'t create the order item.',
     }, null);
     return;
