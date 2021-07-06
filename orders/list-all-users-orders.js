@@ -1,13 +1,21 @@
 'use strict';
-// const auth = require('../auth/auth');
-
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
+const OrderStatus = {
+  'not_checked' : 'not_checked',
+  'prepared_for_shipment' : 'prepared_for_shipment',
+  'shipped' : 'shipped',
+  'delivered' : 'delivered'
+}
+
 module.exports.list = (event, context, callback) => {
-  // For testing purposes need to instantiate Tadle inside function with region defined
+  // For testing purposes need to instantiate Table inside function with region defined
   const ordersDate = event && event.query ? event.query.ordersDate : undefined;
-  const isOrderChecked = event && event.query ? event.query.isOrderChecked : undefined;
+  const orderStatus = event && event.query &&
+      event.query.orderStatus && Object.values(OrderStatus).includes(event.query.orderStatus) ?
+      event.query.orderStatus :
+      OrderStatus.not_checked;
 
   let expressionAttributeValues;
 
@@ -16,24 +24,21 @@ module.exports.list = (event, context, callback) => {
     expressionAttributeValues = {
       ":ordersDate": ordersDate
     }
-    if(isOrderChecked === 'true' || isOrderChecked === 'false') {
+    if(!!orderStatus) {
       expressionAttributeValues = {
         ...expressionAttributeValues,
-        ":isOrderChecked": isOrderChecked === 'true'
+        ":orderStatus": orderStatus
       }
     }
 
     const params = {
       IndexName: "ordersDatesGSI",
+      TableName: process.env.DYNAMODB_ORDER_DETAILS,
       KeyConditionExpression: "orderPlacedDate = :ordersDate",
-      FilterExpression: "checked = :isOrderChecked",
-      TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
+      FilterExpression: "orderStatus = :orderStatus",
       ExpressionAttributeValues: expressionAttributeValues
     };
-
-    // query orders from the database
     dynamoDb.query(params, (error, result) => {
-      // handle potential errors
       if (error) {
         console.error(error);
         callback(null, {

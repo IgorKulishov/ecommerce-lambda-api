@@ -1,10 +1,8 @@
 'use strict';
-
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.update = (event, context, callback) => {
-  // For testing purposes need to instantiate Tadle inside function with region defined
 
   const timestamp = new Date().getTime();
   let data;
@@ -14,27 +12,27 @@ module.exports.update = (event, context, callback) => {
     data = event.body;
   }
   // validation
-  if (typeof data.orderDetails !== 'string' || typeof data.checked !== 'boolean') {
+  if (!data.orderDetails || !data.orderStatus) {
     console.error('Validation Failed');
     callback({
       statusCode: 400,
       headers: { 'Content-Type': 'text/plain' },
-      body: 'Couldn\'t update the orders item.',
+      body: 'Missing parameters in request body: couldn\'t update the order.',
     }, null);
     return;
   }
 
   const params = {
-    TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
+    TableName: process.env.DYNAMODB_ORDER_DETAILS,
     Key: {
       id: event.pathParameters.id,
     },
     ExpressionAttributeValues: {
       ':orderDetails': data.orderDetails,
-      ':checked': data.checked,
+      ':orderStatus': data.orderStatus,
       ':updatedAt': timestamp,
     },
-    UpdateExpression: 'SET orderDetails = :orderDetails, checked = :checked, updatedAt = :updatedAt',
+    UpdateExpression: 'SET orderDetails = :orderDetails, orderStatus = :orderStatus, updatedAt = :updatedAt',
     ReturnValues: 'ALL_NEW',
   };
 
