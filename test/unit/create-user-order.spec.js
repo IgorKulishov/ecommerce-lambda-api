@@ -1,22 +1,30 @@
-const assert = require('chai').assert;
 const expect = require('chai').expect;
 const sinon = require('sinon');
-const createUserOrder = require('../../orders/create-user-order');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
+const updateTableSpy = sinon.spy();
+AWSMock.setSDKInstance(AWS);
+AWSMock.mock('DynamoDB.DocumentClient', 'put', updateTableSpy);
+AWS.config.update({ region: "us-east-1" });
+const createUserOrder = require('../../orders/create-user-order');
 
 describe('test create-user-order', () => {
-    const eventMock = { body: JSON.stringify({ userid: 'userid', userRole: 'userRole', orderid: 'orderid', orderDetails: 'orderDetails' }) };
-    let dynamoDb;
-    let updateTableSpy = sinon.spy();
-
-    beforeEach(function() {
-        AWSMock.setSDKInstance(AWS);
-        AWSMock.mock('DynamoDB.DocumentClient', 'put', updateTableSpy);
-
-        AWS.config.update({ region: "us-east-1" });
-        dynamoDb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-    });
+    const eventMock = {
+        body: JSON.stringify({
+            userid: 'userid',
+            userRole: 'userRole',
+            orderid: 'orderid',
+            orderDetails: {
+                totalAmount: 78.98,
+                orderNumber: "689a43817e711f530598bef44f078700",
+                orderToken: null,
+                totalQuantity: 3,
+                paymentPlaced: null,
+                paymentId: null,
+                itemList: []
+            }
+        })
+    };
 
     afterEach(function() {
         AWSMock.restore('DynamoDB');

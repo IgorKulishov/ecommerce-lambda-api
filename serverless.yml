@@ -12,7 +12,8 @@ provider:
   lambdaHashingVersion: 20201221
 
   environment:
-    DYNAMODB_TABLE_ORDER_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-placed-orders-details
+    DYNAMODB_ORDER_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-placed-orders-details
+    DYNAMODB_ORDER_DATES: ${self:service}-${opt:stage, self:provider.stage}-placed-orders-dates
     ACCESS_TOKEN_SECRET: 'secret.key'
 
   iamRoleStatements:
@@ -25,8 +26,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_ORDER_DETAILS}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_ORDER_DETAILS}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DETAILS}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DETAILS}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DATES}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DATES}/index/*"
 
 functions:
   auth:
@@ -38,7 +41,7 @@ functions:
     events:
       - http:
           path: orders
-          method: put
+          method: post
           authorizer: auth
           cors: true
           integration: LAMBDA
@@ -78,7 +81,7 @@ functions:
     events:
       - http:
           path: orders/{id}
-          method: post
+          method: put
           authorizer: auth
           cors: true
           integration: LAMBDA
@@ -92,14 +95,6 @@ functions:
           authorizer: auth
           cors: true
           integration: LAMBDA
-
-
-# Global secondary index (GSI) has to be defined in 'AttributeDefinitions'
-# We defined two GSIs: usersGSI, ordersGSI
-# 'KeySchema' defines primary/partition key
-# 'AttributeDefinitions' defines primary/partition key and secondary index(s) (GSI)
-# 'GlobalSecondaryIndexes' defines GSI
-# 'Projection' defines returns fields for secondary index(s)
 
 resources:
   Resources:
@@ -128,7 +123,7 @@ resources:
             Projection:
               NonKeyAttributes:
                 - orderDetails
-                - checked
+                - orderStatus
                 - updatedAt
               ProjectionType: INCLUDE
             ProvisionedThroughput:
@@ -142,7 +137,7 @@ resources:
             Projection:
               NonKeyAttributes:
                 - orderDetails
-                - checked
+                - orderStatus
                 - updatedAt
               ProjectionType: INCLUDE
             ProvisionedThroughput:
@@ -156,7 +151,7 @@ resources:
             Projection:
               NonKeyAttributes:
                 - orderDetails
-                - checked
+                - orderStatus
               ProjectionType: INCLUDE
             ProvisionedThroughput:
               ReadCapacityUnits: '1'
@@ -164,4 +159,20 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE_ORDER_DETAILS}
+        TableName: ${self:provider.environment.DYNAMODB_ORDER_DETAILS}
+
+    PlacedOrdersDates:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        KeySchema:
+          - AttributeName: year
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: year
+            AttributeType: S
+
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_ORDER_DATES}

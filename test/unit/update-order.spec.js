@@ -1,20 +1,28 @@
-const assert = require('chai').assert;
+'use strict';
 const expect = require('chai').expect;
 const sinon = require('sinon');
-const updateOrder = require('../../orders/update-order');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
+const updateTableSpy = sinon.spy();
+AWSMock.setSDKInstance(AWS);
+AWSMock.mock('DynamoDB.DocumentClient', 'update', updateTableSpy);
+const updateOrder = require('../../orders/update-order');
 
 describe('update order', () => {
-    const eventMock = { body: JSON.stringify({ orderDetails: 'microscope', checked: true }), pathParameters: { id: '1234567' }};
-    let dynamoDb;
-    let updateTableSpy = sinon.spy();
+    const eventMock = { body: JSON.stringify({
+            orderDetails: {
+                totalAmount: 78.98,
+                orderNumber: "689a43817e711f530598bef44f078700",
+                orderToken: null,
+                totalQuantity: 3,
+                paymentPlaced: null,
+                paymentId: null,
+                itemList: []
+            },
+            orderStatus: 'not_checked'
+        }), pathParameters: { id: '1234567' }};
 
-    beforeEach(function() {
-        AWSMock.setSDKInstance(AWS);
-        AWSMock.mock('DynamoDB.DocumentClient', 'update', updateTableSpy);
-        dynamoDb = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10", region: "us-east-1" });
-    });
+    beforeEach(function() {});
 
     afterEach(function() {
         AWSMock.restore('DynamoDB');

@@ -31,13 +31,13 @@ Todo list:
 
 2  placed-order-details
 
-| Fields    |   |
-|-----------|---|
-| id (orderid)  |  string |
-| orderDetails   |  string |
-| checked   | boolean  |
-| createdAt   | integer  |
-| updatedAt   |  integer |
+| Fields             |            |
+|--------------------|------------|
+| id (orderid)       |  string    |
+| orderDetails       |  string    |
+| orderStatus        |  string    |
+| createdAt          |  integer   |
+| updatedAt          |  integer   |
 
 ## Commands
 - install: npm i
@@ -96,3 +96,7 @@ Note: just use as:
           ":userid": event.path.id
         }
     ```
+
+- 'KeySchema' defines primary/partition key
+- 'AttributeDefinitions' defines primary/partition key and secondary index(s) (GSI)
+- 'Projection' defines returns fields for secondary index(s)

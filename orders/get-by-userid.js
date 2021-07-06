@@ -7,7 +7,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 module.exports.get = (event, context, callback) => {
 
   const params = {
-    TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
+    TableName: process.env.DYNAMODB_ORDER_DETAILS,
     IndexName: "usersGSI",
     KeyConditionExpression: "userid = :userid",
     ExpressionAttributeValues: {

@@ -1,11 +1,16 @@
 'use strict';
-
 const uuid = require('uuid');
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
+const OrderStatus = {
+  'not_checked' : 'not_checked',
+  'prepared_for_shipment' : 'prepared_for_shipment',
+  'shipped' : 'shipped',
+  'delivered' : 'delivered'
+}
+
 module.exports.create = (event, context, callback) => {
-  // For testing purposes need to instantiate Table inside function with region defined
   let data;
   const timestamp = new Date().getTime();
   const time = new Date();
@@ -25,14 +30,14 @@ module.exports.create = (event, context, callback) => {
     return;
   }
   const paramsOrderDetails = {
-    TableName: process.env.DYNAMODB_TABLE_ORDER_DETAILS,
+    TableName: process.env.DYNAMODB_ORDER_DETAILS,
     Item: {
       id: uuid.v1(),
       userid: data.userid,
       orderid: data.orderid,
       orderDetails: typeof data.orderDetails ==='string' ? JSON.parse(data.orderDetails) : data.orderDetails,
       userRole: data.userRole,
-      checked: false,
+      orderStatus: OrderStatus.not_checked,
       createdAt: timestamp,
       updatedAt: timestamp,
       orderPlacedDate: time.toISOString().split('T')[0]
