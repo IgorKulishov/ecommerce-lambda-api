@@ -7,13 +7,13 @@ const deleteTableSpy = sinon.spy();
 AWSMock.setSDKInstance(AWS);
 AWSMock.mock('DynamoDB.DocumentClient', 'delete', deleteTableSpy);
 AWS.config.update({ region: "us-east-1" });
-const deleteUserOrder = require('../../orders/delete-order');
+const deleteUserOrder = require('../orders/delete-order');
 
 describe('test delete-user-order', () => {
 
-    afterEach(function() {
-        AWSMock.restore('DynamoDB');
-    });
+    // afterEach(function() {
+    //     AWSMock.restore('DynamoDB');
+    // });
 
     it('if dynamoDB delete was called', () => {
         const eventMock = { path: { id: '1234567' } };

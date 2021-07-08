@@ -2,12 +2,12 @@
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
-module.exports.get = (event, context, callback) => {
+module.exports.getByOrderId = (event, context, callback) => {
 
     const params = {
+      TableName: process.env.DYNAMODB_ORDER_DETAILS,
       IndexName: "ordersGSI",
       KeyConditionExpression: "orderid = :orderid",
-      TableName: process.env.DYNAMODB_ORDER_DETAILS,
       ExpressionAttributeValues: {
         ":orderid": event.path.id
       }
@@ -18,11 +18,11 @@ module.exports.get = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error);
-      callback(null, {
+      callback({
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
         body: error
-      });
+      }, null);
       return;
     }
     callback(null, result.Items);

@@ -6,7 +6,7 @@ const AWSMock = require('aws-sdk-mock');
 const updateTableSpy = sinon.spy();
 AWSMock.setSDKInstance(AWS);
 AWSMock.mock('DynamoDB.DocumentClient', 'update', updateTableSpy);
-const updateOrder = require('../../orders/update-order');
+const updateOrder = require('../orders/update-order');
 
 describe('update order', () => {
     const eventMock = { body: JSON.stringify({
@@ -24,9 +24,9 @@ describe('update order', () => {
 
     beforeEach(function() {});
 
-    afterEach(function() {
-        AWSMock.restore('DynamoDB');
-    });
+    // afterEach(function() {
+    //     AWSMock.restore('DynamoDB');
+    // });
 
     it('if dynamoDB update was called', () => {
         updateOrder.update(eventMock, {}, (arg1, arg2) => { return });
