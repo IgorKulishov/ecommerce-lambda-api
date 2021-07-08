@@ -1,10 +1,8 @@
 'use strict';
-
 const AWS = require('aws-sdk');
-// For testing purposes need to instantiate Table inside function with region defined
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
-module.exports.get = (event, context, callback) => {
+module.exports.getByUserId = (event, context, callback) => {
 
   const params = {
     TableName: process.env.DYNAMODB_ORDER_DETAILS,

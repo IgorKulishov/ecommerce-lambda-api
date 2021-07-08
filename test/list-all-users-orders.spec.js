@@ -6,7 +6,7 @@
 // const scanTableSpy = sinon.spy();
 // AWSMock.setSDKInstance(AWS);
 // AWSMock.mock('DynamoDB.DocumentClient', 'query', scanTableSpy);
-// const allOrders = require('../../orders/list-all-users-orders');
+// const allOrders = require('../orders/list-all-users-orders');
 //
 // describe('test list all orders for all users', () => {
 //
