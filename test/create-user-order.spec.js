@@ -4,7 +4,6 @@ const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 const putDBFunction = (params, queryCallback) => {
-    console.log('successfully put item in database');
     queryCallback(null, { Items: 'successfully query item in database' });
 };
 const mockLambdaCallback = sinon.spy();
