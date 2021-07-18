@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 const deleteDBFunction = (params, queryCallback) => {
-    queryCallback(null, { Items: 'successfully query item in database' });
+    queryCallback(null, { Items: 'successfully delete item in database' });
 };
 const mockLambdaCallback = sinon.spy();
 AWSMock.setSDKInstance(AWS);
@@ -14,7 +14,6 @@ const deleteUserOrder = require('../orders/delete-order');
 describe('test delete-user-order', () => {
 
     afterEach(function() {
-        AWSMock.restore('DynamoDB');
         AWSMock.restore('DynamoDB.DocumentClient');
     });
 
