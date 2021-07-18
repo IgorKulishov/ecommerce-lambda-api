@@ -11,7 +11,6 @@ AWSMock.setSDKInstance(AWS);
 AWSMock.mock('DynamoDB.DocumentClient', 'put', putDBFunction);
 AWS.config.update({ region: "us-east-1" });
 const createUserOrder = require('../orders/create-user-order');
-
 describe('test create-user-order', () => {
     const eventMock = {
         body: JSON.stringify({
