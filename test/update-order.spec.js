@@ -10,6 +10,7 @@ const mockLambdaCallback = sinon.spy();
 AWSMock.setSDKInstance(AWS);
 AWSMock.mock('DynamoDB.DocumentClient', 'update', updateDBFunc);
 AWS.config.update({ region: "us-east-1" });
+process.env.DYNAMODB_ORDER_DETAILS = 'TEST';
 const updateOrder = require('../orders/update-order');
 describe('update order', () => {
     const eventMock = {
@@ -28,6 +29,7 @@ describe('update order', () => {
 
     afterEach(function() {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
     it('if dynamoDB update was called', () => {

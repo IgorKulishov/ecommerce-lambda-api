@@ -10,14 +10,15 @@ const queryDBFunction = (params, queryCallback) => {
 const mockLambdaCallback = sinon.spy();
 AWSMock.mock('DynamoDB.DocumentClient', 'query', queryDBFunction);
 AWS.config.update({ region: "us-east-1" });
+process.env.DYNAMODB_ORDER_DETAILS = 'TEST';
 const getByOrderId = require('../orders/get-by-orderid');
 
 describe('test get order details by order id', () => {
     const eventMock = { path: { id: '1234567' } };
 
     afterEach(function() {
-        AWSMock.restore('DynamoDB');
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
     it('if dynamoDB get by orderid was called', () => {

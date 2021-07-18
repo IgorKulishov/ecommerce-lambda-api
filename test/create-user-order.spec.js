@@ -10,7 +10,9 @@ const mockLambdaCallback = sinon.spy();
 AWSMock.setSDKInstance(AWS);
 AWSMock.mock('DynamoDB.DocumentClient', 'put', putDBFunction);
 AWS.config.update({ region: "us-east-1" });
+process.env.DYNAMODB_ORDER_DETAILS = 'TEST';
 const createUserOrder = require('../orders/create-user-order');
+
 describe('test create-user-order', () => {
     const eventMock = {
         body: JSON.stringify({
@@ -31,6 +33,7 @@ describe('test create-user-order', () => {
 
     afterEach(function() {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
     it('if dynamoDB put was called', () => {

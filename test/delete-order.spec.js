@@ -10,11 +10,12 @@ const mockLambdaCallback = sinon.spy();
 AWSMock.setSDKInstance(AWS);
 AWSMock.mock('DynamoDB.DocumentClient', 'delete', deleteDBFunction);
 AWS.config.update({ region: "us-east-1" });
+process.env.DYNAMODB_ORDER_DETAILS = 'TEST';
 const deleteUserOrder = require('../orders/delete-order');
 describe('test delete-user-order', () => {
-
     afterEach(function() {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
     it('if dynamoDB delete was called', () => {
