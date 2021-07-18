@@ -39,4 +39,4 @@ jobs:
       - name: Run tests
         run: |
           npm install
-          ng test
+          npm run test
