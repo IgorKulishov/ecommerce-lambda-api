@@ -29,8 +29,7 @@ describe('update order', () => {
     beforeEach(function() {});
 
     afterEach(function() {
-        // AWSMock.restore('DynamoDB.DocumentClient');
-        AWSMock.restore('DynamoDB.DocumentClient', 'update');
+        AWSMock.restore('DynamoDB.DocumentClient');
     });
 
     it('if dynamoDB update was called', () => {
