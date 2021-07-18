@@ -1,0 +1,42 @@
+name: CI
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the develop branch
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop, dev/* ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  test:
+    # The type of runner that the job will run on
+    name: Unit tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ['12']
+        os: [ubuntu-latest]
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      # Runs a single command using the runners shell
+      #       - name: install dependencies
+      #         run: npm install
+
+      # Runs a set of commands using the runners shell
+      - name: Run tests
+        run: |
+          npm install
+          ng test
