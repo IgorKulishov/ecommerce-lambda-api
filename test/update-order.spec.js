@@ -3,9 +3,14 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
-const updateTableSpy = sinon.spy();
+const updateDBFunc= (params, queryCallback) => {
+    console.log('successfully update item in database');
+    queryCallback(null, { Items: 'successfully query item in database' });
+};
+const mockLambdaCallback = sinon.spy();
 AWSMock.setSDKInstance(AWS);
-AWSMock.mock('DynamoDB.DocumentClient', 'update', updateTableSpy);
+AWSMock.mock('DynamoDB.DocumentClient', 'update', updateDBFunc);
+AWS.config.update({ region: "us-east-1" });
 const updateOrder = require('../orders/update-order');
 
 describe('update order', () => {
@@ -24,12 +29,13 @@ describe('update order', () => {
 
     beforeEach(function() {});
 
-    // afterEach(function() {
-    //     AWSMock.restore('DynamoDB');
-    // });
+    afterEach(function() {
+        // AWSMock.restore('DynamoDB.DocumentClient');
+        AWSMock.restore('DynamoDB.DocumentClient', 'update');
+    });
 
     it('if dynamoDB update was called', () => {
-        updateOrder.update(eventMock, {}, (arg1, arg2) => { return });
-        expect(updateTableSpy.calledOnce).to.be.true;
+        updateOrder.update(eventMock, {}, mockLambdaCallback);
+        expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });
