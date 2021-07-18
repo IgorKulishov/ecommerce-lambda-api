@@ -4,8 +4,6 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.update = (event, context, callback) => {
 
-  console.log('update called');
-
   const timestamp = new Date().getTime();
   let data;
   if(typeof event.body === 'string') {
@@ -13,7 +11,6 @@ module.exports.update = (event, context, callback) => {
   } else {
     data = event.body;
   }
-  console.log(`data: ${data}`);
   // validation
   if (!data.orderDetails || !data.orderStatus) {
     console.error('Validation Failed');
@@ -42,6 +39,7 @@ module.exports.update = (event, context, callback) => {
   // update the order in the database
   dynamoDb.update(params, (error, result) => {
     // handle potential errors
+    console.log('DB update');
     if (error) {
       console.error(error);
       callback({
