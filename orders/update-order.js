@@ -41,6 +41,7 @@ module.exports.update = (event, context, callback) => {
     // handle potential errors
     console.log('DB update');
     if (error) {
+      console.log('DB update error: ');
       console.error(error);
       callback({
         statusCode: error.statusCode || 501,
