@@ -13,7 +13,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   test:
     # The type of runner that the job will run on
     name: Unit tests
@@ -30,10 +29,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node_version }}
-
-      # Runs a single command using the runners shell
-      #       - name: install dependencies
-      #         run: npm install
 
       # Runs a set of commands using the runners shell
       - name: Run tests
