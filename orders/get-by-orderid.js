@@ -15,7 +15,6 @@ module.exports.getByOrderId = (event, context, callback) => {
 
   // query orders from the database
   dynamoDb.query(params, (error, result) => {
-    // handle potential errors
     if (error) {
       console.error(error);
       callback({

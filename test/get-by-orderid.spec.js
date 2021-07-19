@@ -4,20 +4,26 @@ const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 AWSMock.setSDKInstance(AWS);
-const getTableSpy = sinon.spy();
-AWSMock.mock('DynamoDB.DocumentClient', 'query', getTableSpy);
+const queryDBFunction = (params, queryCallback) => {
+    queryCallback(null, { Items: 'successfully query item by orderid in database' });
+};
+AWSMock.mock('DynamoDB.DocumentClient', 'query', queryDBFunction);
 AWS.config.update({ region: "us-east-1" });
 const getByOrderId = require('../orders/get-by-orderid');
 
 describe('test get order details by order id', () => {
     const eventMock = { path: { id: '1234567' } };
+    beforeEach(() => {
+        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+    });
+    afterEach(() => {
+        AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
+    });
 
-    // afterEach(function() {
-    //     AWSMock.restore('DynamoDB');
-    // });
-
-    it('if dynamoDB get by orderid was called', () => {
-        getByOrderId.getByOrderId(eventMock, {}, (arg1, arg2) => { return });
-        expect(getTableSpy.calledOnce).to.be.true;
+    it('if dynamoDB get by orderid was called', async () => {
+        const mockLambdaCallback = sinon.spy();
+       await getByOrderId.getByOrderId(eventMock, {}, mockLambdaCallback);
+        expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

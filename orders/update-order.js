@@ -38,7 +38,6 @@ module.exports.update = (event, context, callback) => {
 
   // update the order in the database
   dynamoDb.update(params, (error, result) => {
-    // handle potential errors
     if (error) {
       console.error(error);
       callback({

@@ -1,10 +1,13 @@
+'use strict';
 const expect = require('chai').expect;
 const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
-const updateTableSpy = sinon.spy();
+const putDBFunction = (params, queryCallback) => {
+    queryCallback(null, { Items: 'successfully put item in database' });
+};
 AWSMock.setSDKInstance(AWS);
-AWSMock.mock('DynamoDB.DocumentClient', 'put', updateTableSpy);
+AWSMock.mock('DynamoDB.DocumentClient', 'put', putDBFunction);
 AWS.config.update({ region: "us-east-1" });
 const createUserOrder = require('../orders/create-user-order');
 
@@ -26,12 +29,17 @@ describe('test create-user-order', () => {
         })
     };
 
-    afterEach(function() {
-        AWSMock.restore('DynamoDB');
+    beforeEach(() => {
+        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+    });
+    afterEach(() => {
+        AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
-    it('if dynamoDB put was called', () => {
-        createUserOrder.create(eventMock, {}, (arg1, arg2) => { return });
-        expect(updateTableSpy.calledOnce).to.be.true;
+    it('if dynamoDB put was called', async () => {
+        const mockLambdaCallback = sinon.spy();
+        await createUserOrder.create(eventMock, {}, mockLambdaCallback);
+        expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });
