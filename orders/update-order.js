@@ -50,8 +50,6 @@ module.exports.update = (event, context, callback) => {
       }, null);
       return;
     }
-    console.log(`error : ${error}`);
-    console.log(`result : ${result}`);
 
     callback(null, JSON.stringify(result.Attributes));
   });
