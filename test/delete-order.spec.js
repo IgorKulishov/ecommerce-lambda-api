@@ -15,13 +15,17 @@ AWS.config.update({ region: "us-east-1" });
 const deleteUserOrder = require('../orders/delete-order');
 describe('test delete-user-order', () => {
     const eventMock = { path: { id: '1234567' } };
+    beforeEach(() => {
+        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+    });
     afterEach(function() {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
-    it('if dynamoDB delete was called', () => {
+    it('if dynamoDB delete was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        deleteUserOrder.delete(eventMock, {}, mockLambdaCallback);
+        await deleteUserOrder.delete(eventMock, {}, mockLambdaCallback);
         expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

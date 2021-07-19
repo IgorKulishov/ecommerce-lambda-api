@@ -25,14 +25,18 @@ describe('update order', () => {
             orderStatus: 'not_checked'
         }), pathParameters: { id: '1234567' }};
 
-    afterEach(function() {
+    beforeEach(() => {
+        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+    });
+    afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
-    it('if dynamoDB update was called', () => {
+    it('if dynamoDB update was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        updateOrder.update(eventMock, {}, mockLambdaCallback);
-        //TODO: enable test - currently breaks by unknown reason
+        await updateOrder.update(eventMock, {}, mockLambdaCallback);
+        // TODO: enable test - currently breaks by unknown reason
         // expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

@@ -13,13 +13,17 @@ const getByOrderId = require('../orders/get-by-orderid');
 
 describe('test get order details by order id', () => {
     const eventMock = { path: { id: '1234567' } };
-    afterEach(function() {
+    beforeEach(() => {
+        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+    });
+    afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
-    it('if dynamoDB get by orderid was called', () => {
+    it('if dynamoDB get by orderid was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        getByOrderId.getByOrderId(eventMock, {}, mockLambdaCallback);
+       await getByOrderId.getByOrderId(eventMock, {}, mockLambdaCallback);
         expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

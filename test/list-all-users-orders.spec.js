@@ -18,14 +18,18 @@ describe('test list all orders for all users', () => {
             orderStatus: 'prepared_for_shipment'
         }
     };
-    afterEach(function() {
-        // AWSMock.restore('DynamoDB');
+
+    beforeEach(() => {
+        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+    });
+    afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
-    it('if dynamoDB query was called', () => {
+    it('if dynamoDB query was called', async () => {
         const mockLambdaCallback = sinon.spy();
         allOrders.list(eventMock, {}, mockLambdaCallback);
-        expect(mockLambdaCallback.calledOnce).to.be.true;
+        await expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

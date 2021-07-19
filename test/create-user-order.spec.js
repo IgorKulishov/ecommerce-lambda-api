@@ -29,13 +29,17 @@ describe('test create-user-order', () => {
         })
     };
 
-    afterEach(function() {
+    beforeEach(() => {
+        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+    });
+    afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
+        delete process.env.DYNAMODB_ORDER_DETAILS;
     });
 
-    it('if dynamoDB put was called', () => {
+    it('if dynamoDB put was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        createUserOrder.create(eventMock, {}, mockLambdaCallback);
+        await createUserOrder.create(eventMock, {}, mockLambdaCallback);
         expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });
