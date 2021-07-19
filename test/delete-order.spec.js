@@ -4,7 +4,10 @@ const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 const deleteDBFunction = (params, queryCallback) => {
-    queryCallback(null, { Items: 'successfully delete item in database' });
+    queryCallback(null, {
+        id: 'uuid_abc_123',
+        message: "order deleted"
+    });
 };
 AWSMock.setSDKInstance(AWS);
 AWSMock.mock('DynamoDB.DocumentClient', 'delete', deleteDBFunction);
