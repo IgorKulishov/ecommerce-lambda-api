@@ -21,9 +21,8 @@ module.exports.update = (event, context, callback) => {
     }, null);
     return;
   }
-
   const params = {
-    TableName: process.env.DYNAMODB_ORDER_DETAILS,
+    TableName: process.env.DYNAMODB_PLACED_ORDERS_DETAILS,
     Key: {
       id: event.pathParameters.id,
     },

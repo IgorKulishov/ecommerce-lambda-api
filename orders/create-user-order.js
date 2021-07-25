@@ -12,8 +12,11 @@ const OrderStatus = {
 
 module.exports.create = (event, context, callback) => {
   let data;
-  const timestamp = new Date().getTime();
   const time = new Date();
+  const timestamp = time.getTime();
+  const orderDay = time.getDate().toString();
+  const orderYearMonth = time.toISOString().slice(0,7);
+  const orderPlacedDate = time.toISOString().split('T')[0];
   if(typeof event.body === 'string') {
     data = JSON.parse(event.body);
   } else {
@@ -30,7 +33,7 @@ module.exports.create = (event, context, callback) => {
     return;
   }
   const paramsOrderDetails = {
-    TableName: process.env.DYNAMODB_ORDER_DETAILS,
+    TableName: process.env.DYNAMODB_PLACED_ORDERS_DETAILS,
     Item: {
       id: uuid.v1(),
       userid: data.userid,
@@ -43,8 +46,8 @@ module.exports.create = (event, context, callback) => {
       orderPlacedDate: time.toISOString().split('T')[0]
     }
   };
-  /** Safe placed orders **/
-  dynamoDb.put(paramsOrderDetails, (error) => {
+  /** Save placed orders **/
+  dynamoDb.put(paramsOrderDetails, (error, res) => {
     // handle potential errors
     if (error) {
       console.error(error);
@@ -55,6 +58,36 @@ module.exports.create = (event, context, callback) => {
       }, null);
       return;
     }
+    /** Save order month and year **/
+    saveOrderDate();
     callback(null, paramsOrderDetails.Item);
   });
+
+  function saveOrderDate() {
+    const updateParamsOrderYearMonth = {
+      TableName: process.env.DYNAMODB_PLACED_ORDERS_DATES,
+      Key: {
+        orderYearMonth: orderYearMonth,
+        orderDay: orderDay
+      },
+      UpdateExpression: 'SET orderPlacedDate = :orderPlacedDate, updatedAt = :updatedAt',
+      ExpressionAttributeValues: {
+        ':orderPlacedDate': orderPlacedDate,
+        ':updatedAt': timestamp
+      },
+      ReturnValues: 'UPDATED_NEW',
+    };
+    dynamoDb.update(updateParamsOrderYearMonth, (error, updateResult) => {
+      if (error) {
+        console.error(error);
+        callback({
+          statusCode: error.statusCode || 501,
+          headers: { 'Content-Type': 'text/plain' },
+          body: 'Couldn\'t fetch the order item.',
+        }, null);
+        return;
+      }
+      console.log('successfully saved order date', updateResult);
+    });
+  }
 };

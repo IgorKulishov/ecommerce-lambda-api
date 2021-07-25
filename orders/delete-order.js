@@ -7,12 +7,11 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 module.exports.delete = (event, context, callback) => {
   const order_id = event.path.id;
   const params = {
-    TableName: process.env.DYNAMODB_ORDER_DETAILS,
+    TableName: process.env.DYNAMODB_PLACED_ORDERS_DETAILS,
     Key: {
       id: order_id,
     },
   };
-
   // delete the order from the database
   dynamoDb.delete(params, (error) => {
     // handle potential errors

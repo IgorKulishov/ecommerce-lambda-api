@@ -5,26 +5,26 @@ const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 AWSMock.setSDKInstance(AWS);
 let queryDBFunction = (params, queryCallback) => {
-    queryCallback(null, { Items: ['successfully query item by orderid in database'] });
+    queryCallback(null, { Items: [{'orderPlacedDate': 'successfully query dates by month in database'}] });
 };
 AWSMock.mock('DynamoDB.DocumentClient', 'query', queryDBFunction);
 AWS.config.update({ region: "us-east-1" });
-const getByOrderId = require('../orders/get-by-orderid');
+const getOrderDates = require('../orders/get-order-dates-by-month');
 
-describe('test get order details by order id', () => {
-    const eventMock = { path: { id: '1234567' } };
+describe('test get order dates by month', () => {
+    const eventMock = { path: { id: '2021-07' } };
     beforeEach(() => {
-        process.env.DYNAMODB_PLACED_ORDERS_DETAILS = 'TEST_DB'
+        process.env.DYNAMODB_PLACED_ORDERS_DATES = 'ORDERS_DATES_TABLE'
     });
     afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
-        delete process.env.DYNAMODB_PLACED_ORDERS_DETAILS;
-        queryDBFunction = null;
+        delete process.env.DYNAMODB_PLACED_ORDERS_DATES;
+        queryDBFunction = undefined;
     });
 
     it('if dynamoDB get by orderid was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        await getByOrderId.getByOrderId(eventMock, {}, mockLambdaCallback);
+        await getOrderDates.getOrderDatesByMonth(eventMock, {}, mockLambdaCallback);
         expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

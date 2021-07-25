@@ -1,5 +1,5 @@
 org: igorkulishov
-service: placed-orders-api
+service: orders-apis
 
 frameworkVersion: '2'
 
@@ -12,8 +12,8 @@ provider:
   lambdaHashingVersion: 20201221
 
   environment:
-    DYNAMODB_ORDER_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-placed-orders-details
-    DYNAMODB_ORDER_DATES: ${self:service}-${opt:stage, self:provider.stage}-placed-orders-dates
+    DYNAMODB_PLACED_ORDERS_DETAILS: ${self:service}-${opt:stage, self:provider.stage}-placed-orders-details
+    DYNAMODB_PLACED_ORDERS_DATES: ${self:service}-${opt:stage, self:provider.stage}-placed-orders-dates
     ACCESS_TOKEN_SECRET: 'secret.key'
 
   iamRoleStatements:
@@ -26,10 +26,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DETAILS}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DETAILS}/index/*"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DATES}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ORDER_DATES}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PLACED_ORDERS_DETAILS}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PLACED_ORDERS_DETAILS}/index/*"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PLACED_ORDERS_DATES}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PLACED_ORDERS_DATES}/index/*"
 
 functions:
   auth:
@@ -92,6 +92,18 @@ functions:
       - http:
           path: orders/{id}
           method: delete
+          authorizer: auth
+          cors: true
+          integration: LAMBDA
+
+
+
+  getOrderDatesByMonth:
+    handler: orders/get-order-dates-by-month.getOrderDatesByMonth
+    events:
+      - http:
+          path: order-date/{id}
+          method: get
           authorizer: auth
           cors: true
           integration: LAMBDA
@@ -159,20 +171,24 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_ORDER_DETAILS}
+        TableName: ${self:provider.environment.DYNAMODB_PLACED_ORDERS_DETAILS}
 
     PlacedOrdersDates:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         KeySchema:
-          - AttributeName: year
+          - AttributeName: orderYearMonth
             KeyType: HASH
+          - AttributeName: orderDay
+            KeyType: RANGE
         AttributeDefinitions:
-          - AttributeName: year
+          - AttributeName: orderYearMonth
+            AttributeType: S
+          - AttributeName: orderDay
             AttributeType: S
 
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_ORDER_DATES}
+        TableName: ${self:provider.environment.DYNAMODB_PLACED_ORDERS_DATES}
