@@ -5,14 +5,13 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 module.exports.getByOrderId = (event, context, callback) => {
 
     const params = {
-      TableName: process.env.DYNAMODB_ORDER_DETAILS,
+      TableName: process.env.DYNAMODB_PLACED_ORDERS_DETAILS,
       IndexName: "ordersGSI",
       KeyConditionExpression: "orderid = :orderid",
       ExpressionAttributeValues: {
         ":orderid": event.path.id
       }
     };
-
   // query orders from the database
   dynamoDb.query(params, (error, result) => {
     if (error) {

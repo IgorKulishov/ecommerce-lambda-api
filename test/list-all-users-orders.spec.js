@@ -20,11 +20,11 @@ describe('test list all orders for all users', () => {
     };
 
     beforeEach(() => {
-        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+        process.env.DYNAMODB_PLACED_ORDERS_DETAILS = 'TEST_DB'
     });
     afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
-        delete process.env.DYNAMODB_ORDER_DETAILS;
+        delete process.env.DYNAMODB_PLACED_ORDERS_DETAILS;
     });
 
     it('if dynamoDB query was called', async () => {

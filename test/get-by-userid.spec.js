@@ -15,11 +15,11 @@ describe('test get order details by user id', () => {
     const eventMock = { path:{ id: '1234567' } };
 
     beforeEach(() => {
-        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+        process.env.DYNAMODB_PLACED_ORDERS_DETAILS = 'TEST_DB'
     });
     afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
-        delete process.env.DYNAMODB_ORDER_DETAILS;
+        delete process.env.DYNAMODB_PLACED_ORDERS_DETAILS;
     });
 
     it('if dynamoDB query by userid was called', async () => {

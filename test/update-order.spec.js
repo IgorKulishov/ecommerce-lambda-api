@@ -26,11 +26,11 @@ describe('update order', () => {
         }), pathParameters: { id: '1234567' }};
 
     beforeEach(() => {
-        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+        process.env.DYNAMODB_PLACED_ORDERS_DETAILS = 'TEST_DB'
     });
     afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
-        delete process.env.DYNAMODB_ORDER_DETAILS;
+        delete process.env.DYNAMODB_PLACED_ORDERS_DETAILS;
     });
 
     it('if dynamoDB update was called', async () => {

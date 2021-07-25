@@ -14,11 +14,11 @@ const getByOrderId = require('../orders/get-by-orderid');
 describe('test get order details by order id', () => {
     const eventMock = { path: { id: '1234567' } };
     beforeEach(() => {
-        process.env.DYNAMODB_ORDER_DETAILS = 'TEST_DB'
+        process.env.DYNAMODB_PLACED_ORDERS_DETAILS = 'TEST_DB'
     });
     afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
-        delete process.env.DYNAMODB_ORDER_DETAILS;
+        delete process.env.DYNAMODB_PLACED_ORDERS_DETAILS;
     });
 
     it('if dynamoDB get by orderid was called', async () => {
