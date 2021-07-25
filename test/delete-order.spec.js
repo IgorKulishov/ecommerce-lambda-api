@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
-const deleteDBFunction = (params, queryCallback) => {
+let deleteDBFunction = (params, queryCallback) => {
     queryCallback(null, {
         id: 'uuid_abc_123',
         message: "order deleted"
@@ -21,6 +21,7 @@ describe('test delete-user-order', () => {
     afterEach(function() {
         AWSMock.restore('DynamoDB.DocumentClient');
         delete process.env.DYNAMODB_PLACED_ORDERS_DETAILS;
+        deleteDBFunction = undefined;
     });
 
     it('if dynamoDB delete was called', async () => {
