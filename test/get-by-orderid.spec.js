@@ -5,7 +5,7 @@ const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
 AWSMock.setSDKInstance(AWS);
 let queryDBFunction = (params, queryCallback) => {
-    queryCallback(null, { Items: ['successfully query dates by month in database'] });
+    queryCallback(null, { Items: ['successfully query item by orderid in database'] });
 };
 AWSMock.mock('DynamoDB.DocumentClient', 'query', queryDBFunction);
 AWS.config.update({ region: "us-east-1" });

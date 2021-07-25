@@ -4,6 +4,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.getOrderDatesByMonth = (event, context, callback) => {
   let orderYearMonth = event.path.id;
+  /** Fall back to current month **/
   if(!orderYearMonth) {
     const time = new Date();
     orderYearMonth = time.toISOString().slice(0,7);

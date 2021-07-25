@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const AWSMock = require('aws-sdk-mock');
-const updateDBFunc= (params, queryCallback) => {
+let updateDBFunc= (params, queryCallback) => {
     queryCallback(null, { Attributes: 'successfully update item in database' });
 };
 AWSMock.setSDKInstance(AWS);
@@ -31,6 +31,7 @@ describe('update order', () => {
     afterEach(() => {
         AWSMock.restore('DynamoDB.DocumentClient');
         delete process.env.DYNAMODB_PLACED_ORDERS_DETAILS;
+        updateDBFunc = undefined;
     });
 
     it('if dynamoDB update was called', async () => {
