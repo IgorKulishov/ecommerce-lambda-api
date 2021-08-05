@@ -24,9 +24,17 @@ module.exports.delete = (event, context, callback) => {
       });
       return;
     }
-    callback(null, {
-      id: order_id,
-      message: "order deleted"
-    });
+    const response = {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: {
+        id: order_id,
+        message: "order deleted"
+      }
+    };
+    callback(null, response);
   });
 };

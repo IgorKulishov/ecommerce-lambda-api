@@ -57,7 +57,7 @@ functions:
           integration: LAMBDA
 
   getByUserId:
-    handler: orders/get-by-userid.get
+    handler: orders/get-by-userid.getByUserId
     events:
       - http:
           path: orders/userid/{id}
@@ -67,7 +67,7 @@ functions:
           integration: LAMBDA
 
   getByOrderId:
-    handler: orders/get-by-orderid.get
+    handler: orders/get-by-orderid.getByOrderId
     events:
       - http:
           path: orders/{id}

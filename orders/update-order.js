@@ -46,7 +46,14 @@ module.exports.update = (event, context, callback) => {
       }, null);
       return;
     }
-
-    callback(null, JSON.stringify(result.Attributes));
+    const response = {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify(result.Attributes)
+    };
+    callback(null, response);
   });
 };

@@ -27,12 +27,21 @@ module.exports.getOrderDatesByMonth = (event, context, callback) => {
       }, null);
       return;
     }
+    let resultsArray;
     const resultsObject = result.Items;
     if(resultsObject) {
-      const resultsArray = resultsObject.map(res => res.orderPlacedDate);
-      callback(null, resultsArray);
+      resultsArray = resultsObject.map(res => res.orderPlacedDate);
     } else {
-      callback(null, []);
+      resultsArray = [];
     }
+    const response = {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: resultsArray
+    }
+    callback(null, response);
   });
 };
