@@ -47,15 +47,7 @@ module.exports.list = (event, context, callback) => {
         });
         return;
       }
-      const response = {
-        statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Credentials': true,
-        },
-        body: result.Items
-      };
-      callback(null, response);
+      callback(null, result.Items);
     });
 
   } else {

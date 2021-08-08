@@ -34,7 +34,6 @@ provider:
 functions:
   auth:
     handler: orders-auth/auth.auth
-    cors: true
 
   create:
     handler: orders/create-user-order.create

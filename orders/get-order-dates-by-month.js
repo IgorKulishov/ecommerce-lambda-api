@@ -34,14 +34,6 @@ module.exports.getOrderDatesByMonth = (event, context, callback) => {
     } else {
       resultsArray = [];
     }
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: resultsArray
-    }
-    callback(null, response);
+    callback(null, resultsArray);
   });
 };

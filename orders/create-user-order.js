@@ -60,15 +60,7 @@ module.exports.create = (event, context, callback) => {
     }
     /** Save order month and year **/
     saveOrderDate();
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: paramsOrderDetails.Item
-    };
-    callback(null, response);
+    callback(null, paramsOrderDetails.Item);
   });
 
   function saveOrderDate() {

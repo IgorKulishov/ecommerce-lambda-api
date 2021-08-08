@@ -17,24 +17,16 @@ module.exports.delete = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error);
-      callback(null, {
+      callback({
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
         body: 'Couldn\'t remove the order item.',
-      });
+      }, null);
       return;
     }
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: {
-        id: order_id,
-        message: "order deleted"
-      }
-    };
-    callback(null, response);
+    callback(null, {
+      id: order_id,
+      message: "order deleted"
+    });
   });
 };
