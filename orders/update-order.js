@@ -46,7 +46,6 @@ module.exports.update = (event, context, callback) => {
       }, null);
       return;
     }
-
     callback(null, JSON.stringify(result.Attributes));
   });
 };
