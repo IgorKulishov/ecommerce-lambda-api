@@ -14,7 +14,7 @@ AWSMock.mock('DynamoDB.DocumentClient', 'delete', deleteDBFunction);
 AWS.config.update({ region: "us-east-1" });
 const deleteUserOrder = require('../orders/delete-order');
 describe('test delete-user-order', () => {
-    const eventMock = { path: { id: '1234567' } };
+    const eventMock = { body: { order_id: '1234567' } };
     beforeEach(() => {
         process.env.DYNAMODB_PLACED_ORDERS_DETAILS = 'TEST_DB'
     });

@@ -1,6 +1,8 @@
 'use strict';
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
+const middy = require('middy');
+const { cors } = require('middy/middlewares');
 
 const OrderStatus = {
   'not_checked' : 'not_checked',
@@ -9,7 +11,7 @@ const OrderStatus = {
   'delivered' : 'delivered'
 }
 
-module.exports.list = (event, context, callback) => {
+const listHandler = (event, context, callback) => {
   // For testing purposes need to instantiate Table inside function with region defined
   const ordersDate = event && event.query ? event.query.ordersDate : undefined;
   const orderStatus = event && event.query &&
@@ -40,21 +42,23 @@ module.exports.list = (event, context, callback) => {
     dynamoDb.query(params, (error, result) => {
       if (error) {
         console.error(error);
-        callback(null, {
+        callback({
           statusCode: error.statusCode || 501,
           headers: { 'Content-Type': 'text/plain' },
           body: error
-        });
+        }, null);
         return;
       }
       callback(null, result.Items);
     });
 
   } else {
-    callback(null, {
+    callback({
       statusCode: 400,
       headers: { 'Content-Type': 'text/plain' },
       body: 'ordersDate query params is missing'
-    });
+    }, null);
   }
 };
+const handler = middy(listHandler).use(cors());
+module.exports.list = { handler };

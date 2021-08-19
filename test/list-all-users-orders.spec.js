@@ -30,7 +30,7 @@ describe('test list all orders for all users', () => {
 
     it('if dynamoDB query was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        allOrders.list(eventMock, {}, mockLambdaCallback);
+        allOrders.list.handler(eventMock, {}, mockLambdaCallback);
         await expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

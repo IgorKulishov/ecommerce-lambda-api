@@ -24,7 +24,7 @@ describe('test get order dates by month', () => {
 
     it('if dynamoDB get by orderid was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        await getOrderDates.getOrderDatesByMonth(eventMock, {}, mockLambdaCallback);
+        await getOrderDates.getOrderDatesByMonth.handler(eventMock, {}, mockLambdaCallback);
         expect(mockLambdaCallback.calledOnce).to.be.true;
     });
 });

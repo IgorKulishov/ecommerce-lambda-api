@@ -1,8 +1,10 @@
 'use strict';
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
+const middy = require('middy');
+const { cors } = require('middy/middlewares');
 
-module.exports.getOrderDatesByMonth = (event, context, callback) => {
+const getOrderDatesByMonthHandler = (event, context, callback) => {
   let orderYearMonth = event.path.id;
   /** Fall back to current month **/
   if(!orderYearMonth) {
@@ -37,3 +39,5 @@ module.exports.getOrderDatesByMonth = (event, context, callback) => {
     callback(null, resultsArray);
   });
 };
+const handler = middy(getOrderDatesByMonthHandler).use(cors());
+module.exports.getOrderDatesByMonth = { handler };
