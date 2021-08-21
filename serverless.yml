@@ -41,12 +41,11 @@ functions:
       - http:
           path: orders
           method: post
-          authorizer: auth
           cors: true
           integration: LAMBDA
 
   list:
-    handler: orders/list-all-users-orders.list
+    handler: orders/list-all-users-orders.list.handler
     events:
       - http:
           path: orders
@@ -81,7 +80,6 @@ functions:
       - http:
           path: orders/{id}
           method: put
-          authorizer: auth
           cors: true
           integration: LAMBDA
 
@@ -91,31 +89,20 @@ functions:
       - http:
           path: orders/delete
           method: post
-          authorizer: auth
           cors: true
           integration: LAMBDA
 
   getOrderDatesByMonth:
-    handler: orders/get-order-dates-by-month.getOrderDatesByMonth
+    handler: orders/get-order-dates-by-month.getOrderDatesByMonth.handler
     events:
       - http:
           path: order-date/{id}
           method: get
-          authorizer: auth
           cors: true
           integration: LAMBDA
 
 resources:
   Resources:
-    GatewayResponseDefault4XX:
-      Type: 'AWS::ApiGateway::GatewayResponse'
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'http://localhost:4200'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
     PlacedOrdersDetails:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
