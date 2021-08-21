@@ -1,8 +1,10 @@
 'use strict';
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
+const middy = require('middy');
+const { cors } = require('middy/middlewares');
 
-module.exports.update = (event, context, callback) => {
+const updateHandler = (event, context, callback) => {
 
   const timestamp = new Date().getTime();
   let data;
@@ -49,3 +51,5 @@ module.exports.update = (event, context, callback) => {
     callback(null, JSON.stringify(result.Attributes));
   });
 };
+const handler = middy(updateHandler).use(cors());
+module.exports.update = { handler };

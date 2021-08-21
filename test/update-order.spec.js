@@ -36,7 +36,7 @@ describe('update order', () => {
 
     it('if dynamoDB update was called', async () => {
         const mockLambdaCallback = sinon.spy();
-        await updateOrder.update(eventMock, {}, mockLambdaCallback);
+        await updateOrder.update.handler(eventMock, {}, mockLambdaCallback);
         // TODO: enable test - currently breaks by the reason:
         // "Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1"
         // Check error in pipeline: https://github.com/IgorKulishov/ecommerce-lambda-api/pull/15/checks?check_run_id=3101650306

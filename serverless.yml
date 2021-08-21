@@ -41,12 +41,11 @@ functions:
       - http:
           path: orders
           method: post
-          authorizer: auth
           cors: true
           integration: LAMBDA
 
   list:
-    handler: orders/list-all-users-orders.list
+    handler: orders/list-all-users-orders.list.handler
     events:
       - http:
           path: orders
@@ -81,7 +80,6 @@ functions:
       - http:
           path: orders/{id}
           method: put
-          authorizer: auth
           cors: true
           integration: LAMBDA
 
@@ -89,21 +87,17 @@ functions:
     handler: orders/delete-order.delete
     events:
       - http:
-          path: orders/{id}
-          method: delete
-          authorizer: auth
+          path: orders/delete
+          method: post
           cors: true
           integration: LAMBDA
 
-
-
   getOrderDatesByMonth:
-    handler: orders/get-order-dates-by-month.getOrderDatesByMonth
+    handler: orders/get-order-dates-by-month.getOrderDatesByMonth.handler
     events:
       - http:
           path: order-date/{id}
           method: get
-          authorizer: auth
           cors: true
           integration: LAMBDA
 

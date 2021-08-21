@@ -5,11 +5,26 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 
 module.exports.delete = (event, context, callback) => {
-  const order_id = event.path.id;
+  let order_id;
+  let data;
+  if(typeof event.body === 'string') {
+    data = JSON.parse(event.body);
+  } else {
+    data = event.body;
+  }
+  if(!data.order_id) {
+    console.error('Validation Failed');
+    callback({
+      statusCode: 400,
+      headers: { 'Content-Type': 'application/json' },
+      body: 'Couldn\'t delete the order.',
+    }, null);
+    return;
+  }
   const params = {
     TableName: process.env.DYNAMODB_PLACED_ORDERS_DETAILS,
     Key: {
-      id: order_id,
+      id: data.order_id,
     },
   };
   // delete the order from the database
