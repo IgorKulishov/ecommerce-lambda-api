@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "uuid": "^2.0.3",
-    "jsonwebtoken": "^8.1.0"
+    "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
     "aws-sdk-mock": "^5.1.0",
